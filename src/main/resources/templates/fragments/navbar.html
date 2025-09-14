@@ -1,0 +1,75 @@
+<nav class="bg-white dark:bg-slate-800 shadow-lg border-b border-slate-200 dark:border-slate-700 mt-4 mb-8 rounded-2xl transition-colors duration-300"
+     th:fragment="navbar"
+     xmlns:th="http://www.thymeleaf.org">
+
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+
+            <!-- Logo -->
+            <a href="/"
+               class="text-blue-600 dark:text-blue-400 font-bold text-xl hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200">
+                YouTube Tools
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="flex items-center space-x-6">
+
+                <!-- SEO Tags -->
+                <a href="/"
+                   class="text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-2 px-3 rounded-lg"
+                   th:classappend="${activePage} == 'home' ? 'text-blue-600 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/20'">
+                    SEO Tags
+                </a>
+
+                <!-- Thumbnails -->
+                <a href="/thumbnail"
+                   class="text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-2 px-3 rounded-lg"
+                   th:classappend="${activePage} == 'thumbnails' ? 'text-blue-600 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/20'">
+                    Thumbnails
+                </a>
+
+                <!-- Video Data -->
+                <a href="/video-details"
+                   class="text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-2 px-3 rounded-lg"
+                   th:classappend="${activePage} == 'video' ? 'text-blue-600 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/20'">
+                    Video Data
+                </a>
+
+                <!-- Theme Toggle Button -->
+                <button id="themeToggle"
+                        type="button"
+                        class="w-10 h-10 flex items-center justify-center border border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 bg-transparent hover:bg-blue-600 hover:text-white dark:hover:bg-blue-400 dark:hover:text-slate-900 rounded-lg transition-all duration-200">
+                    <i id="themeIcon" class="bi bi-sun-fill"></i>
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const toggleBtn = document.getElementById('themeToggle');
+        const icon = document.getElementById('themeIcon')
+
+      toggleBtn.addEventListener('click', function () {
+      const htmlTag = document.documentElement;
+
+      if (htmlTag.classList.contains('dark')) {
+        htmlTag.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        icon.className = 'bi bi-sun-fill';
+      } else {
+        htmlTag.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        icon.className = 'bi bi-moon-fill';
+      }
+      });
+
+      // Page load par check karo
+      if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+      icon.className = 'bi bi-moon-fill';
+      }
+
+    </script>
+</nav>
