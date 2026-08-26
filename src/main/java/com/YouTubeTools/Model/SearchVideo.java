@@ -14,21 +14,31 @@ import java.util.List;
 public class SearchVideo {
 
     private String id;
+
     private String title;
+
     private String channelTitle;
+
     private String description;
+
     private String thumbnailUrl;
+
     private List<String> tags;
+
     private String publishedAt;
+
     private String duration;
+
     private Long viewCount;
+
     private Long likeCount;
 
-    // Helper method to get tags as comma-separated string
     public String getTagsAsString() {
+
         if (tags == null || tags.isEmpty()) {
             return "";
         }
+
         return String.join(", ", tags);
     }
 }

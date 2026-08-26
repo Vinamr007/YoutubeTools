@@ -2,7 +2,6 @@ package com.YouTubeTools.Controller;
 
 import com.YouTubeTools.Model.SearchVideo;
 import com.YouTubeTools.Service.YouTubeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,9 +30,15 @@ public class YouTubeVideoController {
             if (videoId == null || videoId.isEmpty()) {
 
                 Map<String, String> error = new HashMap<>();
-                error.put("message", "Video ID is required");
 
-                return ResponseEntity.badRequest().body(error);
+                error.put(
+                        "message",
+                        "Video ID is required"
+                );
+
+                return ResponseEntity
+                        .badRequest()
+                        .body(error);
             }
 
             List<SearchVideo> videos =
@@ -42,21 +47,33 @@ public class YouTubeVideoController {
             if (videos.isEmpty()) {
 
                 Map<String, String> error = new HashMap<>();
-                error.put("message", "No video found with this ID");
 
-                return ResponseEntity.notFound().build();
+                error.put(
+                        "message",
+                        "No video found with this ID"
+                );
+
+                return ResponseEntity
+                        .notFound()
+                        .build();
             }
 
-            return ResponseEntity.ok(videos.get(0));
+            return ResponseEntity
+                    .ok(videos.get(0));
 
         } catch (Exception e) {
 
             e.printStackTrace();
 
             Map<String, String> error = new HashMap<>();
-            error.put("message", e.getMessage());
 
-            return ResponseEntity.internalServerError()
+            error.put(
+                    "message",
+                    e.getMessage()
+            );
+
+            return ResponseEntity
+                    .internalServerError()
                     .body(error);
         }
     }
