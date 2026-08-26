@@ -136,12 +136,17 @@
                 body: JSON.stringify({ videoId })
             });
             const data = await res.json();
+
             loading.classList.add('hidden');
+
             if (!res.ok) {
-                errorDiv.textContent = data.message || 'An error occurred. Please try again.';
+                errorDiv.textContent =
+                    data.message || 'An error occurred. Please try again.';
+
                 errorDiv.classList.remove('hidden');
                 return;
             }
+
             renderResult(data);
         } catch (err) {
             loading.classList.add('hidden');

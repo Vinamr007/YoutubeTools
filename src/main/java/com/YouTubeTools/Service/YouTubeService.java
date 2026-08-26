@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class YouTubeService {
 
-    @Value("${youtube.api.key}")
+    @Value("${YOUTUBE_API_KEY}")
     private String apiKey;
 
     @Value("${youtube.api.search.url}")
@@ -32,6 +32,7 @@ public class YouTubeService {
         this.webClient = WebClient.builder().build();
         this.objectMapper = new ObjectMapper();
     }
+
 
     public List<SearchVideo> searchVideos(String query) {
         try {
@@ -52,10 +53,33 @@ public class YouTubeService {
         }
     }
 
+    public List<SearchVideo> getVideoDetails(String videoId) {
+
+        try {
+
+            List<String> videoIds = new ArrayList<>();
+            videoIds.add(videoId);
+
+            String videosResponse =
+                    getVideoDetailsFromAPI(videoIds);
+
+            return parseVideoDetails(videosResponse);
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(
+                    "Error getting video details: "
+                            + e.getMessage(), e);
+        }
+    }
+
     private String searchVideosFromAPI(String query) {
+
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(searchUrl)
+                        .scheme("https")
+                        .host("www.googleapis.com")
+                        .path("/youtube/v3/search")
                         .queryParam("part", "snippet")
                         .queryParam("q", query)
                         .queryParam("type", "video")
@@ -63,21 +87,60 @@ public class YouTubeService {
                         .queryParam("key", apiKey)
                         .build())
                 .retrieve()
+                .onStatus(
+                        status -> status.value() == 400,
+                        response -> response.bodyToMono(String.class)
+                                .map(body -> new RuntimeException(
+                                        "Invalid request to YouTube API"))
+                )
+                .onStatus(
+                        status -> status.value() == 403,
+                        response -> response.bodyToMono(String.class)
+                                .map(body -> new RuntimeException(
+                                        "YouTube API key or quota problem"))
+                )
+                .onStatus(
+                        status -> status.value() == 404,
+                        response -> response.bodyToMono(String.class)
+                                .map(body -> new RuntimeException(
+                                        "YouTube resource not found"))
+                )
                 .bodyToMono(String.class)
                 .block();
     }
 
     private String getVideoDetailsFromAPI(List<String> videoIds) {
+
         String videoIdsString = String.join(",", videoIds);
-        
+
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(videosUrl)
+                        .scheme("https")
+                        .host("www.googleapis.com")
+                        .path("/youtube/v3/videos")
                         .queryParam("part", "snippet,statistics,contentDetails")
                         .queryParam("id", videoIdsString)
                         .queryParam("key", apiKey)
                         .build())
                 .retrieve()
+                .onStatus(
+                        status -> status.value() == 400,
+                        response -> response.bodyToMono(String.class)
+                                .map(body -> new RuntimeException(
+                                        "Invalid video request"))
+                )
+                .onStatus(
+                        status -> status.value() == 403,
+                        response -> response.bodyToMono(String.class)
+                                .map(body -> new RuntimeException(
+                                        "YouTube API key or quota problem"))
+                )
+                .onStatus(
+                        status -> status.value() == 404,
+                        response -> response.bodyToMono(String.class)
+                                .map(body -> new RuntimeException(
+                                        "Video not found"))
+                )
                 .bodyToMono(String.class)
                 .block();
     }
