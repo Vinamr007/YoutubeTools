@@ -228,14 +228,11 @@ public class YouTubeService {
     private SearchVideo parseVideoFromJson(
             JsonNode item) {
 
-        JsonNode snippet =
-                item.get("snippet");
+        JsonNode snippet = item.get("snippet");
 
-        JsonNode statistics =
-                item.get("statistics");
+        JsonNode statistics = item.get("statistics");
 
-        JsonNode contentDetails =
-                item.get("contentDetails");
+        JsonNode contentDetails = item.get("contentDetails");
 
         List<String> tags =
                 new ArrayList<>();
@@ -253,74 +250,25 @@ public class YouTubeService {
 
         return SearchVideo.builder()
 
-                .id(
-                        item.get("id").asText()
-                )
+                .id(item.get("id").asText())
 
-                .title(
-                        snippet.get("title").asText()
-                )
+                .title(snippet.get("title").asText())
 
-                .channelTitle(
-                        snippet
-                                .get("channelTitle")
-                                .asText()
-                )
+                .channelTitle(snippet.get("channelTitle").asText())
 
-                .description(
-                        snippet.has("description")
-                                ? snippet
-                                .get("description")
-                                .asText()
-                                : ""
-                )
+                .description(snippet.has("description") ? snippet.get("description").asText() : "")
 
-                .thumbnailUrl(
-                        snippet
-                                .get("thumbnails")
-                                .get("high")
-                                .get("url")
-                                .asText()
-                )
+                .thumbnailUrl(snippet.get("thumbnails").get("high").get("url").asText())
 
                 .tags(tags)
 
-                .publishedAt(
-                        snippet
-                                .get("publishedAt")
-                                .asText()
-                )
+                .publishedAt(snippet.get("publishedAt").asText())
 
-                .duration(
-                        contentDetails != null &&
-                                contentDetails.has("duration")
-                                ? contentDetails
-                                .get("duration")
-                                .asText()
-                                : ""
-                )
+                .duration(contentDetails != null && contentDetails.has("duration") ? contentDetails.get("duration").asText() : "")
 
-                .viewCount(
-                        statistics != null &&
-                                statistics.has("viewCount")
-                                ? Long.parseLong(
-                                statistics
-                                        .get("viewCount")
-                                        .asText()
-                        )
-                                : 0L
-                )
+                .viewCount(statistics != null && statistics.has("viewCount") ? Long.parseLong(statistics.get("viewCount").asText()) : 0L)
 
-                .likeCount(
-                        statistics != null &&
-                                statistics.has("likeCount")
-                                ? Long.parseLong(
-                                statistics
-                                        .get("likeCount")
-                                        .asText()
-                        )
-                                : 0L
-                )
+                .likeCount(statistics != null && statistics.has("likeCount") ? Long.parseLong(statistics.get("likeCount").asText()) : 0L)
 
                 .build();
     }
